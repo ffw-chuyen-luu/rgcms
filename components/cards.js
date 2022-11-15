@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Cards(props) {
@@ -20,10 +21,13 @@ export default function Cards(props) {
               key={index}
               className="block rounded-xl border border-gray-800 p-8 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
               href={card.url}>
-              <img
-                src={card.image.url}
-                alt={card.image.title}
-                className="h-10 w-10 text-pink-500" />
+              <div className="relative h-10 w-10 text-pink-500">
+                <Image
+                  layout="fill"
+                  objectFit="cover"
+                  src={card.image.url}
+                  alt={card.image.title} />
+              </div>
 
               <h3 className="mt-4 text-xl font-bold text-white">{card.title}</h3>
 
