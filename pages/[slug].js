@@ -33,9 +33,9 @@ export const getStaticPaths = async () => {
   };
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = async ({ params, preview = false }) => {
   const { slug } = params;
-  const pageContent = await ContentfulApi.getContentBySlug(slug, PAGE_GRAPHQL_FIELDS, 'page');
+  const pageContent = await ContentfulApi.getContentBySlug(slug, PAGE_GRAPHQL_FIELDS, 'page', preview);
 
   if (!pageContent) {
     return {

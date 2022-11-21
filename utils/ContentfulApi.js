@@ -2,13 +2,17 @@ import { Config } from "./Config";
 
 export default class ContentfulApi {
 
-  static async callContentful(query, variables) {
+  static async callContentful(query, variables, preview = false) {
     const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`;
 
     const fetchOptions = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.CONTENTFUL_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${
+          preview
+            ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
+            : process.env.CONTENTFUL_ACCESS_TOKEN
+        }`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query, variables }),
@@ -72,12 +76,12 @@ export default class ContentfulApi {
     return returnSlugs;
   }
 
-  static async getContentBySlug(slug, graphql_field, contentType = 'page') {
+  static async getContentBySlug(slug, graphql_field, contentType = 'page', preview = false) {
     const collection = `${contentType}Collection`;
-    const variables = { slug }
+    const variables = { slug, preview }
     const query = `
-      query getBySlug($slug: String!) {
-        ${collection}(limit: 1, where: {slug: $slug}) {
+      query getBySlug($slug: String!, $preview: Boolean) {
+        ${collection}(limit: 1, preview: $preview, where: {slug: $slug}) {
           items {
             ${graphql_field}
           }
@@ -85,7 +89,8 @@ export default class ContentfulApi {
       }
     `
 
-    const response = await this.callContentful(query, variables);
+    const response = await this.callContentful(query, variables, preview);
+
     return response.data[collection].items[0]
       ? response.data[collection].items[0]
       : null;

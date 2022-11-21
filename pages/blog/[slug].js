@@ -60,9 +60,9 @@ export async function getStaticPaths() {
   };
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = async ({ params, preview = false }) => {
   const { slug } = params;
-  const pageContent = await ContentfulApi.getContentBySlug(slug, POST_GRAPHQL_FIELDS, 'blog');
+  const pageContent = await ContentfulApi.getContentBySlug(slug, POST_GRAPHQL_FIELDS, 'blog', preview);
 
   if (!pageContent) {
     return {
